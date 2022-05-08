@@ -1,14 +1,14 @@
 from pdf2image import convert_from_path
-import os
+from pathlib import Path
 
-poppler_path = os.path.join(os.getcwd(), r'poppler-0.68.0\bin')
+path_pdf = Path("pdf/")
+path_png = Path("png/")
 
-path_pdf = r"C:\Users\user\Desktop\1.pdf"
-path_png = r"C:\Users\user\Desktop\png"
+p = Path(path_pdf).glob('*')
+files = [x for x in p if x.is_file()]
 
-if not os.path.exists(path_png):
-    os.mkdir(path_png)
-
-pages = convert_from_path(path_pdf, poppler_path=poppler_path)
-for i, page in enumerate(pages):
-    page.save(os.path.join(path_png, f'page_{str(i+1).zfill(2)}.png'))
+for file in files:
+    print(file.resolve())
+    pages = convert_from_path(file, 500)
+    for i, page in enumerate(pages):
+        page.save(path_png/(file.stem + '_' + str(i+1).zfill(len(str(i))) + '.png'), 'PNG')
